@@ -1,0 +1,2 @@
+maps/mp/gametypes/sd.gsc
+maps/mp/gametypes/_toolmenu.gsc
