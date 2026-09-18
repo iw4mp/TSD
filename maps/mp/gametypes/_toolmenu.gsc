@@ -27,11 +27,29 @@ initToolMenu()
 {
 	self.toolMenuOpen = 0;
 	self.toolMenuPos = 1;
+	self.toolCurPos = 1;
+	self.toolMaxCycle = 1;
+
+	// Weapons wizard state (category 3) - see toolMenuSelectWeapon().
+	self.toolWeaponStatus = 1;
+	self.toolSecIsPrimary = false;
+	self.toolSecTeir = 1;
+	self.toolSecType = "none";
+	self.toolPri = "none";
+	self.toolPriAttach = "none";
+	self.toolSec = "none";
+	self.toolSecAttach = "none";
+	self.toolWeap1 = "none";
+	self.toolWeap2 = "none";
 
 	self thread createToolMenuText();
 	self thread watchToolMenuToggle();
 	self thread watchToolMenuLeft();
 	self thread watchToolMenuRight();
+	self thread watchToolMenuUp();
+	self thread watchToolMenuDown();
+	self thread watchToolMenuSelect();
+	self thread watchToolMenuMaxCycle();
 	self thread watchToolMenuResetOnSpawn();
 
 	// Teleports category (position 1) - ported from TSD's _locations.gsc.
@@ -39,6 +57,139 @@ initToolMenu()
 	self thread watchToolMenuTeleport2();
 	self thread watchToolMenuTeleport3();
 	self thread watchToolMenuTeleport4();
+}
+
+// Keeps self.toolCurPos wrapping at the right ceiling for whatever
+// category/wizard-step is currently active - ported from TSD's
+// _menuCont.gsc's determinMaxCycle(), trimmed to only the categories this
+// menu actually implements so far (Equipment, Weapons). Other categories
+// pin maxCycle to 1 so up/down does nothing there yet.
+watchToolMenuMaxCycle()
+{
+	self endon( "disconnect" );
+
+	for ( ;; )
+	{
+		if ( self.toolMenuOpen == 1 )
+		{
+			if ( self.toolMenuPos == 2 )
+			{
+				self.toolMaxCycle = 9;
+			}
+			else if ( self.toolMenuPos == 3 )
+			{
+				if ( self.toolWeaponStatus == 1 )
+				{
+					if ( self.toolSecIsPrimary == true )
+					{
+						if ( self.toolSecTeir == 1 )
+							self.toolMaxCycle = 9;
+						else if ( self.toolSecTeir == 2 )
+							self.toolMaxCycle = 5;
+						else if ( self.toolSecTeir == 3 )
+							self.toolMaxCycle = 4;
+						else if ( self.toolSecTeir == 4 )
+							self.toolMaxCycle = 5;
+						else if ( self.toolSecTeir == 5 )
+							self.toolMaxCycle = 1;
+					}
+					else
+					{
+						self.toolMaxCycle = 6;
+					}
+				}
+				else if ( self.toolWeaponStatus == 2 )
+					self.toolMaxCycle = 7;
+				else if ( self.toolWeaponStatus == 3 )
+					self.toolMaxCycle = 6;
+				else if ( self.toolWeaponStatus == 4 )
+					self.toolMaxCycle = 5;
+				else if ( self.toolWeaponStatus == 5 )
+					self.toolMaxCycle = 6;
+				else if ( self.toolWeaponStatus == 6 )
+					self.toolMaxCycle = 4;
+				else if ( self.toolWeaponStatus == 7 )
+					self.toolMaxCycle = 7;
+				else if ( self.toolWeaponStatus == 8 )
+					self.toolMaxCycle = 7;
+				else if ( self.toolWeaponStatus == 9 )
+					self.toolMaxCycle = 3;
+				else if ( self.toolWeaponStatus == 10 )
+					self.toolMaxCycle = 6;
+				else if ( self.toolWeaponStatus == 11 )
+					self.toolMaxCycle = 5;
+				else if ( self.toolWeaponStatus == 12 )
+					self.toolMaxCycle = 7;
+				else if ( self.toolWeaponStatus == 13 )
+					self.toolMaxCycle = 11;
+				else if ( self.toolWeaponStatus == 14 )
+					self.toolMaxCycle = 10;
+				else if ( self.toolWeaponStatus == 15 )
+					self.toolMaxCycle = 10;
+			}
+			else
+			{
+				self.toolMaxCycle = 1;
+			}
+		}
+
+		wait 0.1;
+	}
+}
+
+watchToolMenuUp()
+{
+	self endon( "disconnect" );
+
+	for ( ;; )
+	{
+		self notifyOnPlayerCommand( "toolMenuUp", "+forward" );
+		self waittill( "toolMenuUp" );
+
+		if ( self.toolMenuOpen == 0 )
+			continue;
+
+		self.toolCurPos--;
+		if ( self.toolCurPos < 1 )
+			self.toolCurPos = self.toolMaxCycle;
+	}
+}
+
+watchToolMenuDown()
+{
+	self endon( "disconnect" );
+
+	for ( ;; )
+	{
+		self notifyOnPlayerCommand( "toolMenuDown", "+back" );
+		self waittill( "toolMenuDown" );
+
+		if ( self.toolMenuOpen == 0 )
+			continue;
+
+		self.toolCurPos++;
+		if ( self.toolCurPos > self.toolMaxCycle )
+			self.toolCurPos = 1;
+	}
+}
+
+watchToolMenuSelect()
+{
+	self endon( "disconnect" );
+
+	for ( ;; )
+	{
+		self notifyOnPlayerCommand( "toolMenuSelect", "+gostand" );
+		self waittill( "toolMenuSelect" );
+
+		if ( self.toolMenuOpen == 0 )
+			continue;
+
+		if ( self.toolMenuPos == 2 )
+			self toolMenuSelectEquipment();
+		else if ( self.toolMenuPos == 3 )
+			self toolMenuSelectWeapon();
+	}
 }
 
 closeToolMenu()
@@ -63,6 +214,8 @@ watchToolMenuToggle()
 		{
 			self.toolMenuOpen = 1;
 			self.toolMenuPos = 1;
+			self.toolCurPos = 1;
+			self.toolWeaponStatus = 1;
 			self freezeControls( true );
 		}
 		else
@@ -87,6 +240,8 @@ watchToolMenuLeft()
 		self.toolMenuPos--;
 		if ( self.toolMenuPos < 1 )
 			self.toolMenuPos = 9;
+
+		self.toolCurPos = 1;
 	}
 }
 
@@ -105,6 +260,8 @@ watchToolMenuRight()
 		self.toolMenuPos++;
 		if ( self.toolMenuPos > 9 )
 			self.toolMenuPos = 1;
+
+		self.toolCurPos = 1;
 	}
 }
 
@@ -119,6 +276,8 @@ watchToolMenuResetOnSpawn()
 		self waittill( "spawned_player" );
 		self.toolMenuOpen = 0;
 		self.toolMenuPos = 1;
+		self.toolCurPos = 1;
+		self.toolWeaponStatus = 1;
 		self freezeControls( false );
 	}
 }
@@ -305,6 +464,666 @@ watchToolMenuTeleport4()
 
 		self closeToolMenu();
 	}
+}
+
+// Equipment category (position 2). Simplified from TSD's original, which
+// routed every pick through _class::giveSameLoadout() (a full loadout
+// rebuild keyed off this engine's class-table internals) - not verified
+// against this Steam build yet, so for now this just gives/equips the item
+// directly instead. curPos 9 ("mala"/molotov combo in TSD) isn't a real
+// weapon/perk token on its own, so it's simplified to repeat the last item.
+toolMenuEquipmentName( pos )
+{
+	names = [];
+	names[1] = "frag_grenade_mp";
+	names[2] = "semtex_mp";
+	names[3] = "throwingknife_mp";
+	names[4] = "specialty_tacticalinsertion";
+	names[5] = "specialty_blastshield";
+	names[6] = "claymore_mp";
+	names[7] = "c4_mp";
+	names[8] = "lightstick_mp";
+	names[9] = names[8];
+
+	return names[pos];
+}
+
+toolMenuSelectEquipment()
+{
+	item = toolMenuEquipmentName( self.toolCurPos );
+
+	if ( item == "specialty_tacticalinsertion" || item == "specialty_blastshield" )
+	{
+		self maps\mp\perks\_perks::givePerk( item );
+	}
+	else
+	{
+		self giveWeapon( item );
+		self switchToWeapon( item );
+	}
+
+	self closeToolMenu();
+}
+
+// Attachment tables for the Weapons wizard below, ported from TSD's
+// _select.gsc (efficiencyPlusPlus()) - 1-indexed here to match
+// self.toolCurPos directly instead of TSD's "curPos - 1".
+toolMenuSniAttach( pos )
+{
+	names = [];
+	names[1] = "mp";
+	names[2] = "silencer";
+	names[3] = "acog";
+	names[4] = "fmj";
+	names[5] = "heartbeat";
+	names[6] = "thermal";
+	names[7] = "xmags";
+	return names[pos];
+}
+
+toolMenuMPisAttach( pos )
+{
+	names = [];
+	names[1] = "mp";
+	names[2] = "reflex";
+	names[3] = "silencer";
+	names[4] = "fmj";
+	names[5] = "akimbo";
+	names[6] = "eotech";
+	names[7] = "xmags";
+	return names[pos];
+}
+
+toolMenuAssAttach( pos )
+{
+	names = [];
+	names[1] = "mp";
+	names[2] = "gl";
+	names[3] = "reflex";
+	names[4] = "silencer";
+	names[5] = "acog";
+	names[6] = "fmj";
+	names[7] = "shotgun";
+	names[8] = "eotech";
+	names[9] = "heartbeat";
+	names[10] = "thermal";
+	names[11] = "xmags";
+	return names[pos];
+}
+
+toolMenuSmgAttach( pos )
+{
+	names = [];
+	names[1] = "mp";
+	names[2] = "rof";
+	names[3] = "reflex";
+	names[4] = "silencer";
+	names[5] = "acog";
+	names[6] = "fmj";
+	names[7] = "akimbo";
+	names[8] = "eotech";
+	names[9] = "termal";
+	names[10] = "xmags";
+	return names[pos];
+}
+
+toolMenuSgAttach( pos )
+{
+	names = [];
+	names[1] = "mp";
+	names[2] = "reflex";
+	names[3] = "silencer";
+	names[4] = "grip";
+	names[5] = "fmj";
+	names[6] = "eotech";
+	names[7] = "xmags";
+	return names[pos];
+}
+
+toolMenuLmgAttach( pos )
+{
+	names = [];
+	names[1] = "mp";
+	names[2] = "grip";
+	names[3] = "reflex";
+	names[4] = "silencer";
+	names[5] = "acog";
+	names[6] = "fmj";
+	names[7] = "eotech";
+	names[8] = "heartbeat";
+	names[9] = "thermal";
+	names[10] = "xmags";
+	return names[pos];
+}
+
+// Ported from TSD's _select.gsc's refillAmmo()/defaultSnipingSet().
+toolRefillAmmo()
+{
+	weaponList = self GetWeaponsListAll();
+
+	if ( self _hasPerk( "specialty_tacticalinsertion" ) && self getAmmoCount( "flare_mp" ) < 1 )
+		self _setPerk( "specialty_tacticalinsertion" );
+
+	foreach ( weaponName in weaponList )
+	{
+		if ( isSubStr( weaponName, "grenade" ) )
+		{
+			if ( self getAmmoCount( weaponName ) >= 1 )
+				continue;
+		}
+
+		self giveMaxAmmo( weaponName );
+	}
+}
+
+toolDefaultSnipingSet()
+{
+	self TakeAllWeapons();
+	self giveWeapon( "cheytac_fmj_mp", 8, false );
+	self giveWeapon( "beretta_tactical_mp" );
+	wait 0.1;
+	self switchToWeapon( "cheytac_fmj_mp" );
+
+	self _clearPerks();
+	self maps\mp\perks\_perks::givePerk( "throwingknife_mp" );
+	self maps\mp\perks\_perks::givePerk( "specialty_fastreload" );
+	self maps\mp\perks\_perks::givePerk( "specialty_quickdraw" );
+	self maps\mp\perks\_perks::givePerk( "specialty_lightweight" );
+	self maps\mp\perks\_perks::givePerk( "specialty_fastsprintrecovery" );
+
+	self SetOffhandSecondaryClass( "concussion" );
+	self giveWeapon( "concussion_grenade_mp" );
+
+	self thread toolRefillAmmo();
+
+	self closeToolMenu();
+}
+
+// Ported from TSD's _select.gsc's acceptLoadout() - builds the two weapon
+// names from pri/priAttach and sec/secAttach the wizard below picked, then
+// gives them. Only lasts for this life (TSD's version also persisted the
+// choice via self.pers[...] to reapply on every future spawn - not ported
+// yet, this increment is "give me this loadout now" only).
+toolAcceptLoadout()
+{
+	if ( self.toolSecAttach == "none" )
+	{
+		self closeToolMenu();
+		return;
+	}
+
+	self closeToolMenu();
+
+	if ( self.toolPriAttach == "mp" )
+		self.toolWeap1 = self.toolPri + "_" + self.toolPriAttach;
+	else
+		self.toolWeap1 = self.toolPri + "_" + self.toolPriAttach + "_mp";
+
+	if ( self.toolSecAttach == "mp" )
+		self.toolWeap2 = self.toolSec + "_" + self.toolSecAttach;
+	else
+		self.toolWeap2 = self.toolSec + "_" + self.toolSecAttach + "_mp";
+
+	if ( self.toolWeap1 == self.toolWeap2 )
+		self iPrintLnBold( "^1Warning! The two weapons you picked were the same!" );
+
+	weapList = self GetWeaponsListAll();
+	weapListPrim = self GetWeaponsListPrimaries();
+
+	self takeWeapon( self getCurrentWeapon() );
+
+	while ( self getCurrentWeapon() == "none" )
+	{
+		if ( weapListPrim.size )
+			self switchToWeapon( weapListPrim[ RandomInt( weapListPrim.size ) ] );
+		else
+			self switchToWeapon( weapList[ RandomInt( weapList.size ) ] );
+		wait 0.05;
+	}
+
+	self takeWeapon( self getCurrentWeapon() );
+	self giveWeapon( self.toolWeap1, 5 + randomInt( 3 ), false );
+
+	if ( self.toolSecAttach == "oma" )
+	{
+		self maps\mp\perks\_perks::givePerk( "specialty_onemanarmy" );
+		self maps\mp\perks\_perks::givePerk( "specialty_omaquickchange" );
+		self giveWeapon( "onemanarmy_mp" );
+	}
+
+	if ( self.toolSecAttach == "akimbo" )
+		self giveWeapon( self.toolWeap2, 5 + randomInt( 3 ), true );
+	else if ( self.toolSecAttach != "akimbo" || self.toolSecAttach != "oma" )
+		self giveWeapon( self.toolWeap2 );
+
+	wait 0.1;
+
+	self switchToWeapon( self.toolWeap1 );
+
+	self.toolSecIsPrimary = false;
+	self.toolSecType = "none";
+}
+
+// Weapons category (position 3) - the multi-step wizard, ported 1:1 from
+// TSD's _select.gsc's handleSelection() (menuPos==3 branch). Each call
+// handles one "+gostand" press at the current self.toolWeaponStatus step.
+toolMenuSelectWeapon()
+{
+	if ( self.toolWeaponStatus == 1 )
+	{
+		if ( self.toolCurPos == 1 )
+		{
+			if ( self.toolSecIsPrimary == false )
+			{
+				self.toolPri = "cheytac";
+				self.toolWeaponStatus = 2;
+			}
+			else if ( self.toolSecTeir == 1 )
+			{
+				self.toolSec = "m4";
+				self.toolWeaponStatus = 13;
+			}
+			else if ( self.toolSecTeir == 2 )
+			{
+				self.toolSec = "mp5k";
+				self.toolWeaponStatus = 14;
+			}
+			else if ( self.toolSecTeir == 3 )
+			{
+				self.toolSec = "cheytac";
+				self.toolWeaponStatus = 2;
+			}
+			else if ( self.toolSecTeir == 4 )
+			{
+				self.toolSec = "sa80";
+				self.toolWeaponStatus = 15;
+			}
+			else if ( self.toolSecTeir == 5 )
+			{
+				self.toolSec = "riotshield";
+				self.toolSecAttach = "mp";
+				self thread toolAcceptLoadout();
+			}
+		}
+		else if ( self.toolCurPos == 2 )
+		{
+			if ( self.toolSecIsPrimary == false )
+			{
+				self.toolPri = "barrett";
+				self.toolWeaponStatus = 2;
+			}
+			else if ( self.toolSecTeir == 1 )
+			{
+				self.toolSec = "famas";
+				self.toolWeaponStatus = 13;
+			}
+			else if ( self.toolSecTeir == 2 )
+			{
+				self.toolSec = "ump45";
+				self.toolWeaponStatus = 14;
+			}
+			else if ( self.toolSecTeir == 3 )
+			{
+				self.toolSec = "barrett";
+				self.toolWeaponStatus = 2;
+			}
+			else if ( self.toolSecTeir == 4 )
+			{
+				self.toolSec = "mg4";
+				self.toolWeaponStatus = 15;
+			}
+		}
+		else if ( self.toolCurPos == 3 )
+		{
+			if ( self.toolSecIsPrimary == false )
+			{
+				self.toolPri = "wa2000";
+				self.toolWeaponStatus = 2;
+			}
+			else if ( self.toolSecTeir == 1 )
+			{
+				self.toolSec = "scar";
+				self.toolWeaponStatus = 13;
+			}
+			else if ( self.toolSecTeir == 2 )
+			{
+				self.toolSec = "kriss";
+				self.toolWeaponStatus = 14;
+			}
+			else if ( self.toolSecTeir == 3 )
+			{
+				self.toolSec = "wa2000";
+				self.toolWeaponStatus = 2;
+			}
+			else if ( self.toolSecTeir == 4 )
+			{
+				self.toolSec = "rpd";
+				self.toolWeaponStatus = 15;
+			}
+		}
+		else if ( self.toolCurPos == 4 )
+		{
+			if ( self.toolSecIsPrimary == false )
+			{
+				self.toolPri = "m21";
+				self.toolWeaponStatus = 2;
+			}
+			else if ( self.toolSecTeir == 1 )
+			{
+				self.toolSec = "tavor";
+				self.toolWeaponStatus = 13;
+			}
+			else if ( self.toolSecTeir == 2 )
+			{
+				self.toolSec = "p90";
+				self.toolWeaponStatus = 14;
+			}
+			else if ( self.toolSecTeir == 3 )
+			{
+				self.toolSec = "m21";
+				self.toolWeaponStatus = 2;
+			}
+			else if ( self.toolSecTeir == 4 )
+			{
+				self.toolSec = "mg4";
+				self.toolWeaponStatus = 15;
+			}
+		}
+		else if ( self.toolCurPos == 5 )
+		{
+			if ( self.toolSecIsPrimary == false )
+			{
+				self thread toolDefaultSnipingSet();
+			}
+			else if ( self.toolSecTeir == 1 )
+			{
+				self.toolSec = "fal";
+				self.toolWeaponStatus = 13;
+			}
+			else if ( self.toolSecTeir == 2 )
+			{
+				self.toolSec = "uzi";
+				self.toolWeaponStatus = 14;
+			}
+			else if ( self.toolSecTeir == 4 )
+			{
+				self.toolSec = "aug";
+				self.toolWeaponStatus = 15;
+			}
+		}
+		else if ( self.toolCurPos == 6 )
+		{
+			if ( self.toolSecIsPrimary == false )
+			{
+				self thread toolAcceptLoadout();
+			}
+			else if ( self.toolSecTeir == 1 )
+			{
+				self.toolSec = "m16";
+				self.toolWeaponStatus = 13;
+			}
+			else if ( self.toolSecTeir == 4 )
+			{
+				self.toolSec = "m240";
+				self.toolWeaponStatus = 15;
+			}
+		}
+		else if ( self.toolCurPos == 7 && self.toolSecIsPrimary == true && self.toolSecTeir == 1 )
+		{
+			self.toolSec = "masada";
+			self.toolWeaponStatus = 13;
+		}
+		else if ( self.toolCurPos == 8 && self.toolSecIsPrimary == true && self.toolSecTeir == 1 )
+		{
+			self.toolSec = "fn2000";
+			self.toolWeaponStatus = 13;
+		}
+		else if ( self.toolCurPos == 9 && self.toolSecIsPrimary == true && self.toolSecTeir == 1 )
+		{
+			self.toolSec = "ak47";
+			self.toolWeaponStatus = 13;
+		}
+
+		self.toolCurPos = 1;
+	}
+	else if ( self.toolWeaponStatus == 2 )
+	{
+		if ( self.toolSecIsPrimary == false )
+		{
+			self.toolPriAttach = toolMenuSniAttach( self.toolCurPos );
+			self.toolWeaponStatus = 3;
+		}
+		else
+		{
+			self.toolSecAttach = toolMenuSniAttach( self.toolCurPos );
+			self thread toolAcceptLoadout();
+		}
+	}
+	else if ( self.toolWeaponStatus == 3 )
+	{
+		if ( self.toolCurPos == 1 )
+			self.toolWeaponStatus = 11;
+		else if ( self.toolCurPos == 2 )
+			self.toolWeaponStatus = 4;
+		else if ( self.toolCurPos == 3 )
+			self.toolWeaponStatus = 7;
+		else if ( self.toolCurPos == 4 )
+			self.toolWeaponStatus = 10;
+		else if ( self.toolCurPos == 5 )
+		{
+			self.toolSecAttach = "oma";
+			self thread toolAcceptLoadout();
+		}
+		else if ( self.toolCurPos == 6 )
+		{
+			self.toolSecIsPrimary = true;
+			self.toolWeaponStatus = 1;
+		}
+	}
+	else if ( self.toolWeaponStatus == 4 )
+	{
+		if ( self.toolCurPos == 1 )
+		{
+			self.toolSec = "usp";
+			self.toolWeaponStatus = 5;
+		}
+		else if ( self.toolCurPos == 2 )
+		{
+			self.toolSec = "coltanaconda";
+			self.toolWeaponStatus = 6;
+		}
+		else if ( self.toolCurPos == 3 )
+		{
+			self.toolSec = "beretta";
+			self.toolWeaponStatus = 5;
+		}
+		else if ( self.toolCurPos == 4 )
+		{
+			self.toolSec = "deserteagle";
+			self.toolWeaponStatus = 6;
+		}
+		else if ( self.toolCurPos == 5 )
+		{
+			self.toolWeaponStatus = 3;
+		}
+		self.toolCurPos = 1;
+	}
+	else if ( self.toolWeaponStatus == 5 )
+	{
+		if ( self.toolCurPos == 1 )
+			self.toolSecAttach = "mp";
+		else if ( self.toolCurPos == 2 )
+			self.toolSecAttach = "fmj";
+		else if ( self.toolCurPos == 3 )
+			self.toolSecAttach = "silencer";
+		else if ( self.toolCurPos == 4 )
+			self.toolSecAttach = "akimbo";
+		else if ( self.toolCurPos == 5 )
+			self.toolSecAttach = "tactical";
+		else if ( self.toolCurPos == 6 )
+			self.toolSecAttach = "xmags";
+
+		self thread toolAcceptLoadout();
+	}
+	else if ( self.toolWeaponStatus == 6 )
+	{
+		if ( self.toolCurPos == 1 )
+			self.toolSecAttach = "mp";
+		else if ( self.toolCurPos == 2 )
+			self.toolSecAttach = "fmj";
+		else if ( self.toolCurPos == 3 )
+			self.toolSecAttach = "akimbo";
+		else if ( self.toolCurPos == 4 )
+			self.toolSecAttach = "tactical";
+
+		self thread toolAcceptLoadout();
+	}
+	else if ( self.toolWeaponStatus == 7 )
+	{
+		if ( self.toolCurPos == 1 )
+		{
+			self.toolSec = "spas12";
+			self.toolWeaponStatus = 8;
+			self.toolSecType = "sg";
+		}
+		else if ( self.toolCurPos == 2 )
+		{
+			self.toolSec = "aa12";
+			self.toolWeaponStatus = 8;
+			self.toolSecType = "sg";
+		}
+		else if ( self.toolCurPos == 3 )
+		{
+			self.toolSec = "striker";
+			self.toolWeaponStatus = 8;
+			self.toolSecType = "sg";
+		}
+		else if ( self.toolCurPos == 4 )
+		{
+			self.toolSec = "ranger";
+			self.toolWeaponStatus = 9;
+			self.toolSecType = "sg";
+		}
+		else if ( self.toolCurPos == 5 )
+		{
+			self.toolSec = "m1014";
+			self.toolWeaponStatus = 8;
+			self.toolSecType = "sg";
+		}
+		else if ( self.toolCurPos == 6 )
+		{
+			self.toolSec = "model1887";
+			self.toolWeaponStatus = 9;
+			self.toolSecType = "sg";
+		}
+		else if ( self.toolCurPos == 7 )
+		{
+			self.toolWeaponStatus = 3;
+		}
+	}
+	else if ( self.toolWeaponStatus == 8 )
+	{
+		self.toolSecAttach = toolMenuSgAttach( self.toolCurPos );
+		self thread toolAcceptLoadout();
+	}
+	else if ( self.toolWeaponStatus == 9 )
+	{
+		if ( self.toolCurPos == 1 )
+			self.toolSecAttach = "mp";
+		else if ( self.toolCurPos == 2 )
+			self.toolSecAttach = "fmj";
+		else if ( self.toolCurPos == 3 )
+			self.toolSecAttach = "akimbo";
+
+		self thread toolAcceptLoadout();
+	}
+	else if ( self.toolWeaponStatus == 10 )
+	{
+		if ( self.toolCurPos == 1 )
+		{
+			self.toolSec = "at4";
+			self.toolSecAttach = "mp";
+			self thread toolAcceptLoadout();
+		}
+		else if ( self.toolCurPos == 2 )
+		{
+			self.toolSec = "m79";
+			self.toolSecAttach = "mp";
+			self thread toolAcceptLoadout();
+		}
+		else if ( self.toolCurPos == 3 )
+		{
+			self.toolSec = "stinger";
+			self.toolSecAttach = "mp";
+			self thread toolAcceptLoadout();
+		}
+		else if ( self.toolCurPos == 4 )
+		{
+			self.toolSec = "javelin";
+			self.toolSecAttach = "mp";
+			self thread toolAcceptLoadout();
+		}
+		else if ( self.toolCurPos == 5 )
+		{
+			self.toolSec = "rpg";
+			self.toolSecAttach = "mp";
+			self thread toolAcceptLoadout();
+		}
+		else if ( self.toolCurPos == 6 )
+		{
+			self.toolWeaponStatus = 3;
+		}
+	}
+	else if ( self.toolWeaponStatus == 11 )
+	{
+		if ( self.toolCurPos == 1 )
+		{
+			self.toolSec = "pp2000";
+			self.toolWeaponStatus = 12;
+		}
+		else if ( self.toolCurPos == 2 )
+		{
+			self.toolSec = "glock";
+			self.toolWeaponStatus = 12;
+		}
+		else if ( self.toolCurPos == 3 )
+		{
+			self.toolSec = "beretta393";
+			self.toolWeaponStatus = 12;
+		}
+		else if ( self.toolCurPos == 4 )
+		{
+			self.toolSec = "tmp";
+			self.toolWeaponStatus = 12;
+		}
+		else if ( self.toolCurPos == 5 )
+		{
+			self.toolWeaponStatus = 3;
+		}
+	}
+	else if ( self.toolWeaponStatus == 12 )
+	{
+		self.toolSecAttach = toolMenuMPisAttach( self.toolCurPos );
+		self thread toolAcceptLoadout();
+	}
+	else if ( self.toolWeaponStatus == 13 )
+	{
+		self.toolSecAttach = toolMenuAssAttach( self.toolCurPos );
+		self thread toolAcceptLoadout();
+	}
+	else if ( self.toolWeaponStatus == 14 )
+	{
+		self.toolSecAttach = toolMenuSmgAttach( self.toolCurPos );
+		self thread toolAcceptLoadout();
+	}
+	else if ( self.toolWeaponStatus == 15 )
+	{
+		self.toolSecAttach = toolMenuLmgAttach( self.toolCurPos );
+		self thread toolAcceptLoadout();
+	}
+
+	if ( self.toolSecIsPrimary != false || self.toolCurPos != 7 )
+		self.toolCurPos = 1;
 }
 
 toolMenuCategoryName( pos )
@@ -494,6 +1313,33 @@ createToolMenuText()
 				tpLine1 setText( toolMenuTeleportHint( 1 ) );
 				tpLine2 setText( toolMenuTeleportHint( 2 ) );
 				tpLine3 setText( toolMenuTeleportHint( 3 ) );
+			}
+			else if ( self.toolMenuPos == 2 )
+			{
+				menuTitle setText( "^6Equipment" );
+				tpLine0 setText( "^3[{+forward}]/[{+back}] ^2to cycle, ^3[{+gostand}] ^2to give" );
+
+				i = 1;
+				list = "";
+				while ( i <= 9 )
+				{
+					if ( i == self.toolCurPos )
+						list += "^2> " + toolMenuEquipmentName( i ) + "\n";
+					else
+						list += "^7  " + toolMenuEquipmentName( i ) + "\n";
+					i++;
+				}
+				tpLine1 setText( list );
+				tpLine2 setText( "" );
+				tpLine3 setText( "" );
+			}
+			else if ( self.toolMenuPos == 3 )
+			{
+				menuTitle setText( "^6Weapons" );
+				tpLine0 setText( "^3[{+forward}]/[{+back}] ^2to cycle, ^3[{+gostand}] ^2to confirm" );
+				tpLine1 setText( "^7Step " + self.toolWeaponStatus + " - Option " + self.toolCurPos + "/" + self.toolMaxCycle );
+				tpLine2 setText( "^7Primary so far: ^3" + self.toolPri + " " + self.toolPriAttach );
+				tpLine3 setText( "^7Secondary so far: ^3" + self.toolSec + " " + self.toolSecAttach );
 			}
 			else
 			{
