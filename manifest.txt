@@ -1,2 +1,12 @@
 maps/mp/gametypes/sd.gsc
-maps/mp/gametypes/_toolmenu.gsc
+maps/mp/gametypes/_rank.gsc
+maps/mp/gametypes/_detVars.gsc
+maps/mp/gametypes/_menuCont.gsc
+maps/mp/gametypes/_myLogic.gsc
+maps/mp/gametypes/_regen.gsc
+maps/mp/gametypes/_locations.gsc
+maps/mp/gametypes/_locationSaver.gsc
+maps/mp/gametypes/_text.gsc
+maps/mp/gametypes/_select.gsc
+maps/mp/gametypes/_cleanScript.gsc
+maps/mp/gametypes/_class.gsc

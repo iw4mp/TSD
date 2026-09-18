@@ -72,8 +72,6 @@ main()
 	maps\mp\gametypes\_globallogic::init();
 	maps\mp\gametypes\_callbacksetup::SetupCallbacks();
 	maps\mp\gametypes\_globallogic::SetupCallbacks();
-
-	maps\mp\gametypes\_toolmenu::init();
 	
 	registerRoundSwitchDvar( level.gameType, 3, 0, 9 );
 	registerTimeLimitDvar( level.gameType, 2.5, 0, 1440 );
