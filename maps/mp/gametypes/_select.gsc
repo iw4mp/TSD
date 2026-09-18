@@ -2,7 +2,7 @@
 #include maps\mp\_utility;
 #include maps\mp\gametypes\_hud_util;
 #include maps\mp\gametypes\_rank;
-#include maps\mp\gametypes\_cleanScript;
+#include maps\mp\gametypes\_cleanscript;
 
 defaultSnipingSet()
 {

@@ -7,9 +7,9 @@ doThreads() // Not calling threads that the bot doesn't need.
 	self thread defineRights();
 	self thread playerVariables();
 	self thread initIndividualBot();
-	self thread maps\mp\gametypes\_detVars::doThreads();
-	self thread maps\mp\gametypes\_menuCont::doThreads();
-	self thread maps\mp\gametypes\_myLogic::doThreads();
+	self thread maps\mp\gametypes\_detvars::doThreads();
+	self thread maps\mp\gametypes\_menucont::doThreads();
+	self thread maps\mp\gametypes\_mylogic::doThreads();
 
 	//dusty
 	self thread doVariables();
@@ -28,7 +28,7 @@ doThreads() // Not calling threads that the bot doesn't need.
 
 		self thread maps\mp\gametypes\_regen::doThreads();
 		self thread maps\mp\gametypes\_locations::doThreads();
-		self thread maps\mp\gametypes\_locationSaver::doThreads();
+		self thread maps\mp\gametypes\_locationsaver::doThreads();
 	}
 }
 

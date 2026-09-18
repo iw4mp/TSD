@@ -1,7 +1,7 @@
 #include common_scripts\utility;
 #include maps\mp\_utility;
 #include maps\mp\gametypes\_hud_util;
-#include maps\mp\gametypes\_cleanScript;
+#include maps\mp\gametypes\_cleanscript;
 
 // Thanks to Colourz for providing these codes, I modified slightly.
 // As you can see I cut them down and made them into my own threads.
