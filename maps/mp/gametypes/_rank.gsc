@@ -714,8 +714,8 @@ onPlayerSpawned()
 			spawned = true;
 		}
 
-		if (self.pers["giveOnSpawn"] == "true" && self.pers["created"] == true)
-			self thread maps\mp\gametypes\_select::acceptLoadout();
+		//if (self.pers["giveOnSpawn"] == "true" && self.pers["created"] == true)
+		//	self thread maps\mp\gametypes\_select::acceptLoadout(); // bisection - see doThreads() comment above
 
 		if (self.pers["useCustom"] == "true" && self.pers["mySpawn"] != 0)
 		{
