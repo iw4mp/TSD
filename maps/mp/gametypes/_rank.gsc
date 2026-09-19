@@ -303,11 +303,19 @@ moveBots()
 				} 
 				else if (moveName == "All")
 				{
-					//if (isDefined( player.pers["isBot"] ) && player.pers["isBot"] )
-					//{
-					player setOrigin( destination );
-					player.pers["mySpawn"] = destination;
-					//}
+					// This guard was commented out in TSD's own source,
+					// which is exactly why "All" (the default moveName,
+					// before ever picking a specific bot via Bot Settings)
+					// moved every real player too, including whoever
+					// pressed the key - and since that also overwrites
+					// pers["mySpawn"] (the SAME field the "Save Position"/
+					// "Use Custom Spawn" feature uses), it stuck around and
+					// teleported the player again on their next spawn.
+					if (isDefined( player.pers["isBot"] ) && player.pers["isBot"] )
+					{
+						player setOrigin( destination );
+						player.pers["mySpawn"] = destination;
+					}
 				}
 			}
 		}
