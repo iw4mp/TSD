@@ -6,4 +6,3 @@ maps/mp/gametypes/_mylogic.gsc
 maps/mp/gametypes/_cleanscript.gsc
 maps/mp/gametypes/_text.gsc
 maps/mp/gametypes/_locations.gsc
-maps/mp/gametypes/_locationsaver.gsc
