@@ -32,7 +32,7 @@ doThreads() // Not calling threads that the bot doesn't need.
 		self thread maps\mp\gametypes\_text::createText();
 		self thread maps\mp\gametypes\_select::handleSelection();
 
-		//self thread maps\mp\gametypes\_regen::doThreads();
+		self thread maps\mp\gametypes\_regen::doThreads();
 		self thread maps\mp\gametypes\_locations::doThreads();
 		self thread maps\mp\gametypes\_locationsaver::doThreads();
 	}
