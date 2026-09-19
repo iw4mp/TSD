@@ -586,11 +586,6 @@ giveLoadout( team, class, allowCopycat )
 	// perk loadout to ensure player perk icons arent overwritten
 	if ( level.dieHardMode )
 		self maps\mp\perks\_perks::givePerk( "specialty_pistoldeath" );
-
-	// Removed - was unconditionally forcing Steady Aim on every player
-	// regardless of their actual chosen loadout perks, in all 3 class-setup
-	// code paths in this file (not something the user wanted).
-	//self maps\mp\perks\_perks::givePerk( "specialty_bulletaccuracy" ); 	// Steady Aim
 	
 	// only give the deathstreak for the initial spawn for this life.
 	if ( loadoutDeathStreak != "specialty_null" && getTime() == self.spawnTime )
@@ -846,11 +841,6 @@ giveSameLoadout( class, equ )
 	// perk loadout to ensure player perk icons arent overwritten
 	if ( level.dieHardMode )
 		self maps\mp\perks\_perks::givePerk( "specialty_pistoldeath" );
-
-	// Removed - was unconditionally forcing Steady Aim on every player
-	// regardless of their actual chosen loadout perks, in all 3 class-setup
-	// code paths in this file (not something the user wanted).
-	//self maps\mp\perks\_perks::givePerk( "specialty_bulletaccuracy" ); 	// Steady Aim
 	
 	// only give the deathstreak for the initial spawn for this life.
 	if ( loadoutDeathStreak != "specialty_null" && getTime() == self.spawnTime )
@@ -985,11 +975,6 @@ giveLoadoutPerks( class )
 	// perk loadout to ensure player perk icons arent overwritten
 	if ( level.dieHardMode )
 		self maps\mp\perks\_perks::givePerk( "specialty_pistoldeath" );
-
-	// Removed - was unconditionally forcing Steady Aim on every player
-	// regardless of their actual chosen loadout perks, in all 3 class-setup
-	// code paths in this file (not something the user wanted).
-	//self maps\mp\perks\_perks::givePerk( "specialty_bulletaccuracy" ); 	// Steady Aim
 	
 	self loadoutJustPerks( loadoutPerk1, loadoutPerk2, loadoutPerk3 );
 

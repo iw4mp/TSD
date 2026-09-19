@@ -1373,12 +1373,6 @@ createText()
 					Text4 setText( "^1Host Migration: ^3" + self.hostMig );
 				}
 
-				if (self.curPos == 6) {
-					Text6 setText( "^2Impact Trickshotting: ^3" + self.impactTS );
-				} else if (self.curPos != 6) {
-					Text6 setText( "^1Impact Trickshotting: ^3" + self.impactTS );
-				}
-
 			} else if (self.menuPos == 7) {
 				Menu1 setText( "^6Change Map" );
 				Menu2 setText( "^2Press ^3[{+reload}] ^2to ^3swap between DLC. ^2Press ^3[{+melee}] ^2to ^3swap pages." );
