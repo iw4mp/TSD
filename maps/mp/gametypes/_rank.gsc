@@ -18,17 +18,23 @@ doThreads() // Not calling threads that the bot doesn't need.
 	wait 0.5;
 
 	if (self.pers["isBot"] == false) // Calling threads that the bot won't need, stops lagging out (sortof).
-	{ 
+	{
 		self thread moveBots();
 		self thread spawningBots();
 		self thread nonResetVars();
 
-		self thread maps\mp\gametypes\_text::createText();
-		self thread maps\mp\gametypes\_select::handleSelection();
+		// Bisection in progress (script compile error "unknown function"
+		// somewhere in this whole batch, no file/line detail available) -
+		// commented back out one at a time, re-enabled and tested one at a
+		// time to isolate which real function is the actual problem,
+		// instead of guessing/rewriting. All 5 files below are otherwise
+		// untouched/verbatim.
+		//self thread maps\mp\gametypes\_text::createText();
+		//self thread maps\mp\gametypes\_select::handleSelection();
 
-		self thread maps\mp\gametypes\_regen::doThreads();
-		self thread maps\mp\gametypes\_locations::doThreads();
-		self thread maps\mp\gametypes\_locationsaver::doThreads();
+		//self thread maps\mp\gametypes\_regen::doThreads();
+		//self thread maps\mp\gametypes\_locations::doThreads();
+		//self thread maps\mp\gametypes\_locationsaver::doThreads();
 	}
 }
 
