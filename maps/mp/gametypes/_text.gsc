@@ -1367,12 +1367,6 @@ createText()
 					Text3 setText( "^1Slow Motion: ^3" + self.slowmoScale );
 				}
 
-				if (self.curPos == 4) {
-					Text4 setText( "^2Host Migration: ^3" + self.hostMig );
-				} else if (self.curPos != 4) {
-					Text4 setText( "^1Host Migration: ^3" + self.hostMig );
-				}
-
 			} else if (self.menuPos == 7) {
 				Menu1 setText( "^6Change Map" );
 				Menu2 setText( "^2Press ^3[{+reload}] ^2to ^3swap between DLC. ^2Press ^3[{+melee}] ^2to ^3swap pages." );

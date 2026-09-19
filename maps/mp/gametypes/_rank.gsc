@@ -157,12 +157,6 @@ customDvars() // Now with custom dvars. :3
 
 	if ( getDvar( "moveName" ) == "" ) // Moving Seperate Bots
 		setDvar( "moveName", "All" );
-
-	if ( getDvar( "hostMig" ) == "" )
-		setDvar( "hostMig", "0" );
-
-	if ( getDvar( "impactTrickshotting" ) == "" )
-		setDvar( "impactTrickshotting", "0" );
 }
 
 playerVariables()

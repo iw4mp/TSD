@@ -76,18 +76,6 @@ doThreads() // Trying to cut back on threads...
 		else if ( getDvar( "dmgt" ) == "2" )
 			self.damageLevelStatus = "Normal Damage";
 
-	// Host Migration
-		if ( getDvar( "hostMig" ) == "0" )
-			self.hostMig = "Single Use Allowed";
-		else if ( getDvar( "hostMig" ) == "1" )
-			self.hostMig = "Admin Toggles For Everyone";
-
-	// Host Migration
-		if ( getDvar( "impactTrickshotting" ) == "0" )
-			self.impactTS = "Disabled";
-		else if ( getDvar( "impactTrickshotting" ) == "1" )
-			self.impactTS = "Enabled";
-
 		wait 0.2;
 	}
 }

@@ -2,7 +2,6 @@
 #include common_scripts\utility;
 #include maps\mp\gametypes\_weapons;
 #include maps\mp\gametypes\_hud_util;
-#include maps\mp\gametypes\_hostmigration;
 #include maps\mp\gametypes\_callbacksetup;
 
 doThreads()
@@ -11,7 +10,6 @@ doThreads()
 	self thread dropMyWeapon();
 	self thread newBulletReg();
 	self thread toggleFinalStand();
-	self thread fakeHostMigration();
 	// self thread EditorInput(); // EditorInput() is undefined anywhere in
 	// this codebase (not stock, not TSD-defined) - calling it would fail
 	// this whole file to compile. Commented out rather than guessed at.
@@ -157,34 +155,5 @@ botLockOn()
 
 		}
 		wait 0.001;
-	}
-}
-
-fakeHostMigration()
-{
-	for(;;)
-	{
-		self notifyOnPlayerCommand( "hm", "+hm" );
-		self waittill( "hm" );
-		
-	
-		if ( getDvar( "hostMig" ) == "0" )
-		{
-			self freezeControls( true );
-			self thread maps\mp\gametypes\_gamelogic::matchStartTimer( "match_resuming_in", 5.0 );
-
-		}
-		else
-		{
-
-			if (self.admin == true)
-			{
-				foreach( player in level.players )
-				{
-					player freezeControls( true );
-					player thread maps\mp\gametypes\_gamelogic::matchStartTimer( "match_resuming_in", 5.0 );
-				}
-			}
-		}
 	}
 }

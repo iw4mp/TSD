@@ -757,8 +757,6 @@ BombTimerWait()
 {
 	level endon( "game_ended" );
 	level endon( "bomb_defused" );
-	
-	maps\mp\gametypes\_hostmigration::waitLongDurationWithGameEndTimeUpdate( level.bombTimer );
 }
 
 
