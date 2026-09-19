@@ -10,4 +10,3 @@ maps/mp/gametypes/_locationsaver.gsc
 maps/mp/gametypes/_select.gsc
 maps/mp/gametypes/_class.gsc
 maps/mp/killstreaks/_killstreaks.gsc
-mp/classTable.csv
