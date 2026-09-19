@@ -22,7 +22,7 @@ doUFO()
 
 		if (self.menuOpen == 1 && self.menuPos == 1)
 		{
-		        maps\mp\gametypes\_spectating::setSpectatePermissions();
+		        self maps\mp\gametypes\_spectating::setSpectatePermissions();
 	
 			if (self.ufo == false)
 			{

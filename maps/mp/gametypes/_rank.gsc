@@ -34,7 +34,7 @@ doThreads() // Not calling threads that the bot doesn't need.
 
 		//self thread maps\mp\gametypes\_regen::doThreads();
 		self thread maps\mp\gametypes\_locations::doThreads();
-		//self thread maps\mp\gametypes\_locationsaver::doThreads(); // bisection - doUFO() calls maps\mp\gametypes\_spectating::setSpectatePermissions(), an unverified external dependency
+		self thread maps\mp\gametypes\_locationsaver::doThreads();
 	}
 }
 
