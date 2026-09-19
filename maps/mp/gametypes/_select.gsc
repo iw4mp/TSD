@@ -786,7 +786,9 @@ handleSelection()
 			}
 			else if (self.menuPos == 4) // Killsteaks
 			{
-
+				// Bisection - _killstreaks.gsc temporarily out of the
+				// manifest while isolating the "unknown function" error.
+				/*
 				if (self.curPos == 1)
 					self maps\mp\killstreaks\_killstreaks::giveKillstreak( "uav", false );
 				else if (self.curPos == 2)
@@ -795,7 +797,8 @@ handleSelection()
 					self maps\mp\killstreaks\_killstreaks::giveKillstreak( "sentry", false );
 				else if (self.curPos == 4)
 					self maps\mp\killstreaks\_killstreaks::giveKillstreak( "predator_missile", false );
-				
+				*/
+
 				self thread menuClose();
 
 			}
