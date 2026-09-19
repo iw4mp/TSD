@@ -1362,21 +1362,15 @@ createText()
 				}
 
 				if (self.curPos == 3) {
-					Text3 setText( "^2Crosshair Size: ^3" + self.noScopes );
+					Text3 setText( "^2Slow Motion: ^3" + self.slowmoScale );
 				} else if (self.curPos != 3) {
-					Text3 setText( "^1Crosshair Size: ^3" + self.noScopes );
+					Text3 setText( "^1Slow Motion: ^3" + self.slowmoScale );
 				}
 
 				if (self.curPos == 4) {
-					Text4 setText( "^2Slow Motion: ^3" + self.slowmoScale );
+					Text4 setText( "^2Host Migration: ^3" + self.hostMig );
 				} else if (self.curPos != 4) {
-					Text4 setText( "^1Slow Motion: ^3" + self.slowmoScale );
-				}
-
-				if (self.curPos == 5) {
-					Text5 setText( "^2Host Migration: ^3" + self.hostMig );
-				} else if (self.curPos != 5) {
-					Text5 setText( "^1Host Migration: ^3" + self.hostMig );
+					Text4 setText( "^1Host Migration: ^3" + self.hostMig );
 				}
 
 				if (self.curPos == 6) {

@@ -270,7 +270,7 @@ determinMaxCycle() // Much cleaner way of the 'Up/Down' menu. :3
 			else if (self.menuPos == 5) // Character Prefs.
 				self.maxCycle = 9;
 			else if (self.menuPos == 6) // Match Settings
-				self.maxCycle = 5;
+				self.maxCycle = 4;
 			else if (self.menuPos == 7) // Fun Stuff
 			{
 				if (self.mapPack == 0)

@@ -893,15 +893,6 @@ handleSelection()
 				}
 				else if (self.curPos == 3)
 				{
-					if ( getdvar( "chs" ) == "0" )
-						setDvar( "chs", "1" );
-					else if ( getdvar( "chs" ) == "1" )
-						setDvar( "chs", "2" );
-					else if ( getdvar( "chs" ) == "2" )
-						setDvar( "chs", "0" );
-				}
-				else if (self.curPos == 4)
-				{
 					if ( getdvar( "timescale" ) == "1" )
 						setDvar( "timescale", "0.75" );
 					else if ( getdvar( "timescale" ) == "0.75" )
@@ -911,7 +902,7 @@ handleSelection()
 					else if ( getdvar( "timescale" ) == "0.25" )
 						setDvar( "timescale", "1" );
 				}
-				else if (self.curPos == 5)
+				else if (self.curPos == 4)
 				{
 					if ( getDvar( "hostMig" ) == "0" )
 						setDvar( "hostMig", "1" );
