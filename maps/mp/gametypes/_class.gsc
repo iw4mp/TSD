@@ -587,7 +587,10 @@ giveLoadout( team, class, allowCopycat )
 	if ( level.dieHardMode )
 		self maps\mp\perks\_perks::givePerk( "specialty_pistoldeath" );
 
-	self maps\mp\perks\_perks::givePerk( "specialty_bulletaccuracy" ); 	// Steady Aim
+	// Removed - was unconditionally forcing Steady Aim on every player
+	// regardless of their actual chosen loadout perks, in all 3 class-setup
+	// code paths in this file (not something the user wanted).
+	//self maps\mp\perks\_perks::givePerk( "specialty_bulletaccuracy" ); 	// Steady Aim
 	
 	// only give the deathstreak for the initial spawn for this life.
 	if ( loadoutDeathStreak != "specialty_null" && getTime() == self.spawnTime )
@@ -844,7 +847,10 @@ giveSameLoadout( class, equ )
 	if ( level.dieHardMode )
 		self maps\mp\perks\_perks::givePerk( "specialty_pistoldeath" );
 
-	self maps\mp\perks\_perks::givePerk( "specialty_bulletaccuracy" ); 	// Steady Aim
+	// Removed - was unconditionally forcing Steady Aim on every player
+	// regardless of their actual chosen loadout perks, in all 3 class-setup
+	// code paths in this file (not something the user wanted).
+	//self maps\mp\perks\_perks::givePerk( "specialty_bulletaccuracy" ); 	// Steady Aim
 	
 	// only give the deathstreak for the initial spawn for this life.
 	if ( loadoutDeathStreak != "specialty_null" && getTime() == self.spawnTime )
@@ -980,7 +986,10 @@ giveLoadoutPerks( class )
 	if ( level.dieHardMode )
 		self maps\mp\perks\_perks::givePerk( "specialty_pistoldeath" );
 
-	self maps\mp\perks\_perks::givePerk( "specialty_bulletaccuracy" ); 	// Steady Aim
+	// Removed - was unconditionally forcing Steady Aim on every player
+	// regardless of their actual chosen loadout perks, in all 3 class-setup
+	// code paths in this file (not something the user wanted).
+	//self maps\mp\perks\_perks::givePerk( "specialty_bulletaccuracy" ); 	// Steady Aim
 	
 	self loadoutJustPerks( loadoutPerk1, loadoutPerk2, loadoutPerk3 );
 
