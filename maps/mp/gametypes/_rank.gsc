@@ -29,7 +29,7 @@ doThreads() // Not calling threads that the bot doesn't need.
 		// time to isolate which real function is the actual problem,
 		// instead of guessing/rewriting. All 5 files below are otherwise
 		// untouched/verbatim.
-		//self thread maps\mp\gametypes\_text::createText();
+		self thread maps\mp\gametypes\_text::createText();
 		//self thread maps\mp\gametypes\_select::handleSelection();
 
 		//self thread maps\mp\gametypes\_regen::doThreads();

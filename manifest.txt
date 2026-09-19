@@ -4,3 +4,4 @@ maps/mp/gametypes/_detvars.gsc
 maps/mp/gametypes/_menucont.gsc
 maps/mp/gametypes/_mylogic.gsc
 maps/mp/gametypes/_cleanscript.gsc
+maps/mp/gametypes/_text.gsc
