@@ -786,9 +786,6 @@ handleSelection()
 			}
 			else if (self.menuPos == 4) // Killsteaks
 			{
-				// Bisection - _killstreaks.gsc temporarily out of the
-				// manifest while isolating the "unknown function" error.
-				/*
 				if (self.curPos == 1)
 					self maps\mp\killstreaks\_killstreaks::giveKillstreak( "uav", false );
 				else if (self.curPos == 2)
@@ -797,7 +794,6 @@ handleSelection()
 					self maps\mp\killstreaks\_killstreaks::giveKillstreak( "sentry", false );
 				else if (self.curPos == 4)
 					self maps\mp\killstreaks\_killstreaks::giveKillstreak( "predator_missile", false );
-				*/
 
 				self thread menuClose();
 
@@ -926,7 +922,15 @@ handleSelection()
 			}
 			else if (self.menuPos == 7) // Change Map
 			{
-
+				// Disabled - confirmed via gsc-tool (compiling against a
+				// real stock GSC dump) that bare map(...) calls here are the
+				// ONLY compile error anywhere in this whole file ("couldn't
+				// determine function call type") - not a native/script
+				// function this build recognizes at all, likely an iw4x-only
+				// addition. Not part of what was actually asked for
+				// (Equipment/Weapons/Match Settings) - left disabled rather
+				// than guessing at a replacement.
+				/*
 				if (self.mapPack == 0) // And not one single fuck was given if you changed the map by accident...
 				{
 					if (self.page == 1)
@@ -938,6 +942,7 @@ handleSelection()
 				{
 					map( self.DLCMap[self.curPos - 1] );
 				}
+				*/
 			}
 			else if (self.menuPos == 8)
 			{
